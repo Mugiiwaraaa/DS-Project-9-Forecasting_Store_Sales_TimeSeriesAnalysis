@@ -21,27 +21,47 @@ Additional files include supplementary information very important for time serie
 - holidays_events.csv - Holidays and Events, with metadata.Important factor that affects store sales largely. <br>
 [Note:  Also has additional information for more complex analysis] 
 
-
-
-## EDA - Exploratory data analysis ## 
+## Time Series Data Analysis ## 
 - Dropped null values .
--
-## Model Building ##
-I also split the data into train and tests sets with a test size of 20%.
+- Transforming the Date(s) into date series format. This is an import step as its the only format in which we can process this data forTime Series Analysis.
+- Creating Lag plots for the datasets - Purpose of lag plots is to notice if there are any trends/randomness in our datasets.We want the data to be as stationary as possible for our model.
 
-I tried three different models and evaluated them using Mean Absolute Error. I chose MAE because it is relatively easy to interpret and outliers aren’t particularly bad in for this type of model.
+![](LagPLot.PNG "LagPLot")
 
-I tried three different models:
+- Plotting the Autocorrelation and Partial Autocorrelation - This allows us to check the randomness in the time series.ACF and PACF explains how the present value of a given time series is correlated with the past
 
-Multiple Linear Regression – Baseline for the model
-DecisionTree Regression – Because of the sparse data from the many categorical variables, I thought a normalized regression like DecisionTree would be effective.
-Random Forest – Again, with the sparsity associated with the data, I thought that this would be a good fit.
+![](Autocorrelation.PNG "Autocorrelation")
+![](Partial.PNG "PACF")
 
-## Model Performance ##
-The Random Forest Regression model outperformed the other approaches on the test and validation sets.I found out the Mean and the Standard Deviation for all the three models. This basically gives us an image by how much percentage can the predictions be off the actual prediction.
-* **Multiple Linear Regression:**   Mean- 5.028337074958086 , Standard Deviation- 1.056869119278954
-* **Decision Tree Regression:** Mean- 4.256820741921791,
-   Standard Deviation- 1.1575140416039331
-* **Random Forest Regression:** Mean- 3.304827981052571, 
-   Standard Deviation- 0.6490112395533792 <br />
-The results were pretty good since in the worst case scenario,our predictions would only be off by a meager 3.65%.
+- We then plot the Autocorrelation against Lag plots to visualize where the randomness occurs. 
+
+![](AcfvsLag.PNG "AcfvsLag")
+
+## Autoregression Time Series Model ##
+It is a time series model that uses observations from previous time steps as input to a regression equation to predict the value at the next time step. Basically it predicts future behavior based on past behavior.
+
+After fitting the model with the dates data , we visualize the forecast.
+
+![](Forecastplot.PNG "Forecastplot")
+
+The 95% confidence level states that there are only 5% chances of us being not correct.
+
+Finally I predict outsample outputs using the forecast function of the model after fitting the data.
+
+
+## Forcasting using Deep Learning Algorithms ##
+I use a RNN model to carry out this task . RNN refers to Recurrent Neural Network. It is  a type of Neural Network where the output from previous step are fed as input to the current step. This is very important for my model as I want it to remember the trends from the previous inputs.
+
+### Model Layers ###
+ - Consists of a GRU layer that takes number of units in the RNN Layer and the input shape
+ - A deep layer - deeply connected, receives all the data from all the neurons in the previous layer. Takes the steps variable(no. of days I want to forecast for)
+ - optimizer - 'RMSprop' : takes larger steps in the horizontal direction
+ - loss - 'mse' : Mean squarred error
+ 
+After necessary preprocessing of the data like splitting into test and train datasets , converting it into a Numpy array, reshaping it and including the lag variable, creating validation sets, I train the model using it.
+
+## Visualizing Train Loss and  Val_Loss against Epochs ##
+
+Plotting the loss value of the training dataset and the validation dataset against the number of epochs.
+
+![](loss.PNG "Loss  Visualization")
